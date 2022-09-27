@@ -15,6 +15,7 @@ public class RoundRobinGenerator {
         }
         RoundRobinGenerator rg = new RoundRobinGenerator();
         System.out.println(rg.getMatchups(teams));
+        Configuration config = Configuration.getTestConfiguration();
     }
 
     public List<Set<Team>> getMatchups(List<Team> teams){

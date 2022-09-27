@@ -1,11 +1,16 @@
 package com.schedule;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class MatchDate {
+    @Getter @Setter
     private LocalDate date;
+    @Getter @Setter
     private int totalSlots;
     private HashMap<Integer,List<Match>> matches = new HashMap<>();
 
@@ -22,6 +27,6 @@ public class MatchDate {
     }
 
     public List<Match> getMatches(int slot){
-        return matches;
+        return matches.get(slot);
     }
 }
