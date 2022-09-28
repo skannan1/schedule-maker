@@ -1,12 +1,11 @@
 package com.schedule;
 
+import com.schedule.excl.Exclusion;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDate;
 
 import static org.junit.Assert.assertEquals;
 
@@ -15,25 +14,15 @@ public class ExclusionTest {
     SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
     @Before
     public void setUp() {
-        try {
-            Date cal = sdf.parse("10/08/2022");
+            LocalDate cal = LocalDate.of(2022,10,8);
             excl1 = new Exclusion(cal);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
     }
 
     @Test
     public void testExclusion(){
-        try {
-            Date cal = sdf.parse("10/08/2022");
+            LocalDate cal = LocalDate.of(2022,10,8);
             assertEquals(true,excl1.shouldExclude(cal));
-            cal = sdf.parse("10/09/2022");
+            cal = LocalDate.of(2022,10,9);
             assertEquals(false,excl1.shouldExclude(cal));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
     }
-
-
 }

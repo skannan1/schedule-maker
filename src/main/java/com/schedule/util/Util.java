@@ -1,4 +1,4 @@
-package com.schedule;
+package com.schedule.util;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;

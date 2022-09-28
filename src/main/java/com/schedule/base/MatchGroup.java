@@ -1,9 +1,9 @@
-package com.schedule;
+package com.schedule.base;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MatchDateGroup {
+public class MatchGroup {
     private List<MatchDate> dates = new ArrayList<>();
 
     public void addMatchDate(MatchDate date) {

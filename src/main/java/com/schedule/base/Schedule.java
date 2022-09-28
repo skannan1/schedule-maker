@@ -1,4 +1,4 @@
-package com.schedule;
+package com.schedule.base;
 
 import java.util.Date;
 

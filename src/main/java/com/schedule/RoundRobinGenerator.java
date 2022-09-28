@@ -1,21 +1,64 @@
 package com.schedule;
 
+import com.schedule.base.Match;
+import com.schedule.base.MatchDate;
+import com.schedule.base.MatchGroup;
+import com.schedule.base.Team;
+import com.schedule.config.Configuration;
+import com.schedule.excl.Exclusion;
+
 import java.util.*;
 
 public class RoundRobinGenerator {
 
     public static void main(String[] args){
-        List<Team> teams = new ArrayList<>();
-        int count=1;
-        while(count<=8){
-            Team team = new Team();
-            team.setName("Team"+count);
-            count++;
-            teams.add(team);
-        }
-        RoundRobinGenerator rg = new RoundRobinGenerator();
-        System.out.println(rg.getMatchups(teams));
         Configuration config = Configuration.getTestConfiguration();
+        RoundRobinGenerator rg = new RoundRobinGenerator();
+//        System.out.println(rg.getMatchups(config.getTeams()));
+        setupMatches(config,rg.getMatchups(config.getTeams()));
+    }
+
+    private static void setupMatches(Configuration config, List<Set<Team>> matchups){
+        ArrayDeque<Set<Team>> matches = new ArrayDeque<Set<Team>>();
+        matches.addAll(matchups);
+        ArrayDeque<MatchGroup> matchGroups = new ArrayDeque<>();
+        matchGroups.addAll(config.getMatchGroup());
+        while(matchGroups.peek()!=null){
+            MatchGroup gp = matchGroups.pop();
+            ArrayDeque<MatchDate> matchDates = new ArrayDeque<>();
+            matchDates.addAll(gp.getMatchDates());
+            while(matchDates.peek()!=null){
+                MatchDate md = matchDates.pop();
+                int slots = md.getTotalSlots();
+                for(int i=0;i<slots;i++){
+                    boolean slotFilled = false;
+                    while(!slotFilled) {
+                        Set<Team> match = matches.peek();
+                        boolean rulesPassed = runExclusions(match,config,md);
+                        if(rulesPassed){
+                            md.addMatch(i,new Match(match));
+                            matches.removeFirst();
+                            slotFilled = true;
+                        }else{
+                            matches.addLast(matches.pop());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private static boolean runExclusions(Set<Team> match,Configuration config,MatchDate date){
+        Team[] teams = match.toArray(new Team[]{});
+        for(Team team : teams) {
+            Iterator<Exclusion> exclIterator = config.getExclusionMap().get(team).iterator();
+            while (exclIterator.hasNext()) {
+                Exclusion excl = exclIterator.next();
+                if (!excl.shouldExclude(date.getDate())) continue;
+                else return false;
+            }
+        }
+        return true;
     }
 
     public List<Set<Team>> getMatchups(List<Team> teams){
